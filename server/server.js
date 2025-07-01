@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './configs/mongodb.js';
-import { clerkWebhooks } from './controllers/webhooks';
+import { clerkWebhooks } from './controllers/webhooks.js';
 
 //Initialize 
 const app = express();
