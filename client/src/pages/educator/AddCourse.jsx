@@ -240,7 +240,7 @@ const AddCourse = () => {
   return (
     <div className='h-screen overflow-scroll flex flex-col items-start justify-between md:p-8 md:pb-0 p-4 pt-8 pb-0'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4 max-w-md w-full text-gray-500'>
-    
+
         <div className='flex flex-col gap-1'>
           <p>Course Title: </p>
           <input onChange={e => setCourseTitle(e.target.value)} value={courseTitle} type="text" placeholder='Type here' className='outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500' required />
@@ -350,8 +350,8 @@ const AddCourse = () => {
                       type="checkbox"
                       className='mt-1 block w-full border rounded py-1 px-2'
                       value={lectureDetails.isPreviewFree}
-                      // onClick={(e) => setLectureDetails({...lectureDetails, isPreviewFree: e.target.value})}
-                      onClick={(e) => setLectureDetails({ ...lectureDetails, isPreviewFree: true })}
+                      onClick={(e) => setLectureDetails({ ...lectureDetails, isPreviewFree: e.target.value })}
+                    // onClick={(e) => setLectureDetails({ ...lectureDetails, isPreviewFree: true })}
                     />
                   </div>
 

@@ -15,10 +15,7 @@ export const updateRoleToEducator = async (req, res) => {
                 role: 'educator',
             }
         })
-
         res.json({ success: true, message: 'You can publish a course now' })
-
-
     } catch (error) {
         res.json({ success: false, message: error.message })
     }
@@ -34,7 +31,6 @@ export const addCourse = async (req, res) => {
         if (!imageFile) {
             return res.json({ success: false, message: "Thumbnail Not Attached" })
         }
-
         const parsedCourseData = await JSON.parse(courseData)
         parsedCourseData.educator = educatorId
         const newCourse = await Course.create(parsedCourseData)
@@ -42,9 +38,6 @@ export const addCourse = async (req, res) => {
         newCourse.courseThumbnail = imageUpload.secure_url
         await newCourse.save()
         res.json({ success: true, message: "Course Added" })
-
-
-
     } catch (error) {
         res.json({ success: false, message: error.message })
     }
