@@ -8,7 +8,7 @@ export const protectEducator = async(req,res, next) => {
         const response = await clerkClient.users.getUser(userId)
 
         if(response.publicMetadata.role !== 'educator'){
-            res.json({success: false, message:"Unauthorized Access!"})
+            return res.json({success: false, message:"Unauthorized Access!"})
         }
         next()
 
