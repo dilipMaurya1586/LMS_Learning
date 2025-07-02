@@ -132,7 +132,6 @@ const AddCourse = () => {
     }
   }
 
-
   useEffect(() => {
     // initiate Quill only once
     if (!quillRef.current && editorRef.current) {
