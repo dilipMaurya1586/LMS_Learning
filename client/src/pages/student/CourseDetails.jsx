@@ -9,6 +9,8 @@ import { assets } from '../../assets/assets.js';
 import humanizeDuration from 'humanize-duration';
 import Footer from '../../components/student/Footer.jsx';
 import YouTube from 'react-youtube'
+import axios from 'axios'; // ✅ correct
+import { toast } from 'react-toastify';
 
 const CourseDetails = () => {
 
@@ -25,16 +27,58 @@ const CourseDetails = () => {
     calculateCourseDuration,
     calculateNoOfLectures,
     currency,
+    backendUrl,
+    userData,
+    getToken
   } = useContext(AppContext);
 
   const fetcheCourseData = async () => {
-    const findCourse = allCourses.find((course) => course._id === id);
-    setCourseData(findCourse);
+    try {
+      const { data } = await axios.get(backendUrl + "/api/course/" + id);
+      if (data.success) {
+        setCourseData(data.courseData);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   }
+
+  const enrollCourse = async () => {
+    try {
+      if (!userData) {
+        return toast.warn("Login to Enroll!");
+      }
+      if (isAlreadyEnrolled) {
+        return toast.warn("Already Enrolled");
+      }
+      const token = await getToken();
+      const { data } = await axios.post(backendUrl + "/api/user/purchase",
+        { courseId: courseData._id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (data.success) {
+        const { session_url } = data;
+        window.location.replace(session_url);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
 
   useEffect(() => {
     fetcheCourseData();
-  }, [allCourses]);
+  }, []);
+
+  useEffect(() => {
+    if (userData && courseData) {
+      setIsAlreadyEnrolled(userData.enrolledCourses.includes(courseData._id));
+    }
+  }, [userData, courseData]);
 
   const toggleSection = (index) => {
     setOpenSections((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -78,8 +122,7 @@ const CourseDetails = () => {
           <p className="text-sm">
             Course by{" "}
             <span className="text-blue-600 underline">
-              GreatStack
-              {/* {courseData.educator.name} */}
+              {courseData.educator.name}
             </span>
           </p>
 
@@ -166,7 +209,7 @@ const CourseDetails = () => {
 
           <div className="p-5">
             <div className="flex items-center gap-2">
-              
+
               <img
                 className="w-3.5"
                 src={assets.time_left_clock_icon}
@@ -210,7 +253,7 @@ const CourseDetails = () => {
               </div>
             </div>
 
-            <button className="md:mt-6 mt-4 w-full py-3 rounded text-center bg-blue-600 text-white font-medium">
+            <button onClick={enrollCourse} className="md:mt-6 mt-4 w-full py-3 rounded text-center bg-blue-600 text-white font-medium">
               {isAlreadyEnrolled ? 'Already Enrolled' : 'Enroll Now'} </button>
 
             <div className="pt-6">
