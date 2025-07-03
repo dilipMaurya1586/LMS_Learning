@@ -11,7 +11,7 @@ export const getUserData = async (req, res) => {
         const userId = req.auth.userId
         const user = await User.findById(userId)
         if (!user) {
-            res.json({ success: false, message: "User not found!" })
+            return res.json({ success: false, message: "User not found!" })
         }
         res.json({ success: true, user });
     } catch (error) {
@@ -24,7 +24,6 @@ export const userEnrolledCourses = async (req, res) => {
     try {
         const userId = req.auth.userId
         const userData = await User.findById(userId).populate('enrolledCourses')
-
         res.json({ success: true, enrolledCourses: userData.enrolledCourses })
     } catch (error) {
         res.json({ success: false, message: error.message })
@@ -42,7 +41,7 @@ export const purchaseCourse = async (req, res) => {
         const userData = await User.findById(userId)
         const courseData = await Course.findById(courseId)
         if (!userData || !courseData) {
-            res.json({ success: false, message: "Data Not Found" })
+            return res.json({ success: false, message: "Data Not Found" })
         }
         const purchaseData = {
             courseId: courseData._id,
@@ -92,7 +91,7 @@ export const updateUserCourseProgress = async (req, res) => {
             }
 
             progressData.lectureCompleted.push(lectureId)
-            progressData.completed = true
+            // progressData.completed = true
             await progressData.save()
         }
         else {
@@ -123,16 +122,12 @@ export const getUserCourseProgress = async (req, res) => {
 
 // Add user ratings to course
 export const addUserRating = async (req, res) => {
+    const userId = req.auth.userId
+    const { courseId, rating } = req.body
+    if (!courseId || !userId || !rating || rating < 1 || rating > 5) {
+        return res.json({ success: false, message: "Invalid details" })
+    }
     try {
-        const userId = req.auth.userId
-        const { courseId, rating } = req.body
-        // console.log("UserId", courseId);
-        // console.log("courseId", courseId);
-        // console.log("rating", rating);        
-
-        if (!courseId || !userId || !rating || rating < 1 || rating > 5) {
-            res.json({ success: false, message: "Invalid details" })
-        }
         const course = await Course.findById(courseId)
         if (!course) {
             return res.json({ success: false, message: "Course Not found!" })
@@ -150,9 +145,9 @@ export const addUserRating = async (req, res) => {
         }
         // await courseData.save()
         await course.save()
-        res.json({ success: true, message: "Rating Added" })
+        return res.json({ success: true, message: "Rating Added" })
     } catch (error) {
-        res.json({ success: false, message: error.message });
+        return res.json({ success: false, message: error.message });
     }
 }
 

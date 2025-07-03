@@ -24,7 +24,6 @@ const MyEnrollMents = () => {
   const getCourseProgress = async () => {
     try {
       const token = await getToken();
-
       const tempProgressArray = await Promise.all(
         enrolledCourses.map(async (course) => {
           const { data } = await axios.post(
@@ -32,18 +31,14 @@ const MyEnrollMents = () => {
             { courseId: course._id },
             { headers: { Authorization: `Bearer ${token}` } }
           );
-          console.log("dta", data.progressData);
-
-
+          // console.log("dta", data.progressData);
           let totalLectures = calculateNoOfLectures(course);
-
           const lectureCompleted = data.progressData
             ? data.progressData.lectureCompleted.length
             : 0;
           return { totalLectures, lectureCompleted };
         })
       );
-
       setProgressArray(tempProgressArray);
     } catch (error) {
       toast.error(error.message);

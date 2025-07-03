@@ -7,7 +7,6 @@ import Course from '../models/Course.js';
 // Api controller function to manage clerk user with databse
 
 export const clerkWebhooks = async (req, res) => {
-
     try {
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
         await whook.verify(JSON.stringify(req.body), {
@@ -15,9 +14,7 @@ export const clerkWebhooks = async (req, res) => {
             "svix-timestamp": req.headers["svix-timestamp"],
             "svix-signature": req.headers["svix-signature"]
         })
-
         const { data, type } = req.body
-
         switch (type) {
             case 'user.created': {
                 const userData = {
@@ -30,7 +27,6 @@ export const clerkWebhooks = async (req, res) => {
                 res.json({})
                 break;
             }
-
             case 'user.updated': {
                 const userData = {
                     email: data.email_address[0].email_address,
@@ -41,17 +37,14 @@ export const clerkWebhooks = async (req, res) => {
                 res.json({})
                 break;
             }
-
             case 'user.deleted': {
                 await User.findByIdAndDelete(data.id);
                 res.json({})
                 break;
             }
-
             default:
                 break;
         }
-
     } catch (error) {
         res.json({ success: false, message: error.message })
     }

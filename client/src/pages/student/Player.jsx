@@ -14,14 +14,20 @@ import Loading from '../../components/student/Loading.jsx'
 
 const Player = () => {
 
-  const { enrolledCourses, calculateChapterTime, backendUrl, getToken, userData, fetchUserEnrolledCourses } = useContext(AppContext)
+  const {
+    enrolledCourses,
+    calculateChapterTime,
+    backendUrl,
+    getToken,
+    userData,
+    fetchUserEnrolledCourses } = useContext(AppContext)
+
   const { courseId } = useParams();
   const [courseData, setCourseData] = useState(null)
   const [openSections, setOpenSections] = useState({})
   const [playerData, setPlayerData] = useState(null)
   const [progressData, setProgressData] = useState(null)
   const [initialRating, setInitialRating] = useState(0)
-
 
   const getCourseData = () => {
     enrolledCourses.map((course) => {
@@ -50,7 +56,6 @@ const Player = () => {
     try {
       const token = await getToken();
       const { data } = await axios.post(backendUrl + '/api/user/update-course-progress', { courseId, lectureId }, { headers: { Authorization: `Bearer ${token}` } })
-
       if (data.success) {
         // console.log("data palyer", data);
         toast.success(data.message)
@@ -63,9 +68,6 @@ const Player = () => {
     }
   }
 
-
-
-
   const getCourseProgress = async () => {
     try {
       const token = await getToken();
@@ -73,7 +75,7 @@ const Player = () => {
 
       if (data.success) {
         setProgressData(data.progressData)
-        toast.success(data.message)
+        // toast.success(data.message)
       } else {
         toast.error(data.message)
       }
@@ -85,10 +87,8 @@ const Player = () => {
   const handleRate = async (rating) => {
     try {
       const token = await getToken();
-
       const { data } = await axios.post(backendUrl + '/api/user/add-rating', { courseId, rating }, { headers: { Authorization: `Bearer ${token}` } })
-      console.log("data", data);
-
+      // console.log("data", data);
       if (data.success) {
         toast.success(data.message)
         fetchUserEnrolledCourses();
@@ -96,7 +96,6 @@ const Player = () => {
       else {
         toast.error(data.message)
       }
-
     } catch (error) {
       toast.error(error.message)
     }
@@ -203,7 +202,9 @@ const Player = () => {
 
               <div className="flex justify-between items-center mt-1">
                 <p>{playerData.chapter}.{playerData.lecture} {playerData.lectureTitle} </p>
-                <button onClick={() => markLectureAsCompleted(playerData.lectureId)} className="text-blue-600">{progressData && progressData.lectureCompleted.includes(playerData.lectureId) ? 'Completed' : 'Mark As Complete'}</button>
+                <button onClick={() => markLectureAsCompleted(playerData.lectureId)}
+                  className="text-blue-600">{progressData && progressData.lectureCompleted.includes(playerData.lectureId)
+                    ? 'Completed' : 'Mark As Complete'}</button>
               </div>
             </div>
           )
