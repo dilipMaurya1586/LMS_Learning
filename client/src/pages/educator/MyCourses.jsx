@@ -21,7 +21,7 @@ const MyCourses = () => {
       data.success && setCourses(data.courses)
     } catch (error) {
       toast.error(error.message)
-      console.log(error.message);
+      // console.log(error.message);
     }
   }
 
